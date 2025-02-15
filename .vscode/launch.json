@@ -17,7 +17,7 @@
             "mainClass": "App",
             // "projectName": "Lab1_bbbbdfaf"
             "cwd": "${workspaceFolder}/cwd",
-            "args": "config_0.txt"
+            "args": "0"
         }
     ]
 }
