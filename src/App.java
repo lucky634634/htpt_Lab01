@@ -15,12 +15,16 @@ public class App {
         System.out.println(args[0]);
         App app = new App();
 
-        app.processInfos = app.ReadConfig("config.txt");
+        app.processInfos = app.ReadConfig("config.cfg");
 
         for (int i = 0; i < app.processInfos.length; i++) {
             System.out.println(app.processInfos[i]);
         }
 
+        Pause();
+    }
+
+    public static void Pause() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter to continue");
         sc.nextLine();
