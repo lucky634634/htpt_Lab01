@@ -1,10 +1,10 @@
 @echo off
 setlocal enableextensions
 
-cd ./src
+cd ./cwd
 
 for /L %%i in (0,1,2) do (
-    start cmd /c "java --enable-preview ./App.java %%i"
+    start cmd /c "java --enable-preview ../src/App.java %%i"
 )
 
 endlocal

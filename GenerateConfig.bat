@@ -1,6 +1,7 @@
 @echo off
 setlocal
 break > .\cwd\config.txt
+
 for /L %%i in (0,1,15) do (
     echo [process] >> .\cwd\config.txt
     echo id = %%i >> .\cwd\config.txt
