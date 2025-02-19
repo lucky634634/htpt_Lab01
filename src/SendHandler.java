@@ -31,18 +31,16 @@ public class SendHandler extends Thread {
     }
 
     private void HandleSendMessage(ProcessInfo processInfo) {
-        Thread[] st = new Thread[10];
-        for (int i = 0; i < 10; i++) {
-            Message message = new Message(_process.currentProcessInfo.id, "Message " + i, processInfo.id, _process.v_p);
-            st[i] = new Thread(() -> SendMessage(processInfo, message));
-            st[i].start();
-        }
-        for (int i = 0; i < 10; i++) {
-            try {
-                st[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            for (int i = 0; i < 10; i++) {
+                Message message = new Message(_process.currentProcessInfo.id, "Message " + i, processInfo.id,
+                        _process.v_p);
+                Thread st = new Thread(() -> SendMessage(processInfo, message));
+                st.start();
+                Thread.sleep(100);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -54,7 +52,8 @@ public class SendHandler extends Thread {
             oos.flush();
             socket.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            // e.printStackTrace();
+            System.err.println(processInfo.id + ": " + message);
         }
     }
 }
