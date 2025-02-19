@@ -2,14 +2,14 @@ import java.io.*;
 import java.net.*;
 
 public class ReceiveHandler extends Thread {
-    public int port;
+    private Process _process = null;
 
-    public ReceiveHandler(int port) {
-        this.port = port;
+    public ReceiveHandler(Process process) {
+        this._process = process;
     }
 
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
+        try (ServerSocket serverSocket = new ServerSocket(_process.currentProcessInfo.port)) {
             while (true) {
                 Socket socket = serverSocket.accept();
                 new Thread(() -> HandleIncomeMessage(socket)).start();
@@ -20,8 +20,8 @@ public class ReceiveHandler extends Thread {
     }
 
     private void HandleIncomeMessage(Socket socket) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-            String message = br.readLine();
+        try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+            Message message = (Message) ois.readObject();
             System.out.println(message);
         } catch (Exception e) {
             e.printStackTrace();

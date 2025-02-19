@@ -5,20 +5,19 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class App {
-    public ProcessInfo[] processInfos;
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 0) {
-            System.err.println("Program requires at least one argument");
+        if (args.length != 2) {
+            System.err.println("Please provide 2 arguments");
             System.exit(1);
         }
-        System.out.println(args[0]);
-        App app = new App();
+        System.out.println("config: " + args[0]);
+        System.out.println("id: " + args[1]);
 
-        app.processInfos = app.ReadConfig("config.cfg");
+        ProcessInfo[] processInfos = ReadConfig(args[0]);
 
-        for (int i = 0; i < app.processInfos.length; i++) {
-            System.out.println(app.processInfos[i]);
+        for (int i = 0; i < processInfos.length; i++) {
+            System.out.println(processInfos[i]);
         }
 
         Pause();
@@ -31,7 +30,7 @@ public class App {
         sc.close();
     }
 
-    public ProcessInfo[] ReadConfig(String fileName) {
+    public static ProcessInfo[] ReadConfig(String fileName) {
         ArrayList<ProcessInfo> processes = new ArrayList<ProcessInfo>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
