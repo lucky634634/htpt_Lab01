@@ -13,6 +13,13 @@ public class App {
         }
         System.out.println("config: " + args[0]);
         System.out.println("id: " + args[1]);
+        int id = 0;
+        try {
+            id = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.err.println("Id must be an integer");
+            System.exit(1);
+        }
 
         ProcessInfo[] processInfos = ReadConfig(args[0]);
 
@@ -20,7 +27,10 @@ public class App {
             System.out.println(processInfos[i]);
         }
 
-        Pause();
+        Process process = new Process(processInfos, id);
+        process.run();
+
+        // Pause();
     }
 
     public static void Pause() {
