@@ -11,6 +11,8 @@ public class ChildProcess {
     private static int numOfMsgsPerSec = 0;
     public static void main(String[] args) {
         int processId = Integer.parseInt(args[0]);
+
+        // Doc file config.properties de lay cac thong so cua chuong trinh
         Properties properties = new Properties();
         try (InputStream input = new FileInputStream("config.properties")) {
             properties.load(input);
@@ -22,26 +24,28 @@ public class ChildProcess {
         ipAddr = properties.getProperty("ipAddr");
         numOfMsgsPerSec = Integer.parseInt(properties.getProperty("numOfMsgsPerSec"));
 
-        System.out.println("Process " + processId + " started");
-
-        // Khoi dong server de nhan cac message
+        // Bat dau chay server de nhan tin nhan
         Thread t = new Thread(() -> startServer(processId));
         t.start();
+        System.out.println("Process " + processId + " started");
 
-        // Tao cac thread de gui message
+        // Tao cac thread de gui tin nhan
         ExecutorService executor = Executors.newFixedThreadPool(11);
-        Semaphore semaphore = new Semaphore(1); // Semaphore de kiem soat so thread chay dong thoi
 
-        // Gui message
+        // Semaphore de kiem soat viec gui tin nhan
+        Semaphore semaphore = new Semaphore(1);
+
+        // Gui tin nhan
         for (int i = 1; i <= 12; i++) {
             if (i != processId) {
                 final int targetProcess = i;
                 executor.submit(() -> {
                     try {
                         for (int j = 0; j < numOfMsgsPerSec; j++) {
-                            semaphore.acquire();    // Chiem huu semaphore
+                            semaphore.acquire(); // Chiem huu semaphore
                             try {
                                 sendMessage(ipAddr, targetProcess, "Message " + j + " from process " + processId);
+                                System.out.println("Process " + processId + " sent message " + j + " to process " + targetProcess);
                             } finally {
                                 semaphore.release(); // Giai phong semaphore
                             }
@@ -52,9 +56,9 @@ public class ChildProcess {
                 });
             }
         }
-        executor.shutdown();    // Ket thuc cac cac thread gui message
+        executor.shutdown();
         try {
-            t.join();   // Ket thuc server
+            t.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

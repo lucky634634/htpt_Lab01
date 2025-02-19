@@ -6,12 +6,14 @@ public class Main {
         final int numProcesses = 12;
         Process[] processes = new Process[numProcesses];
 
-        // Tao cac process con
+        // Tao cac tieu trinh con
         for (int i = 0; i < numProcesses; i++) {
             ProcessBuilder processBuilder = new ProcessBuilder("java", "ChildProcess.java", String.valueOf(i+1));
+            processBuilder.inheritIO();
             processes[i] = processBuilder.start();
         }
 
+        // Wait for all processes to complete
         for (Process process : processes) {
             process.waitFor();
         }
