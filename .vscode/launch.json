@@ -18,7 +18,7 @@
             // "projectName": "Lab1_bbbbdfaf"
             "cwd": "${workspaceFolder}/cwd",
             "args": [
-                "config.cfg",
+                "test.cfg",
                 "0"
             ]
         }
