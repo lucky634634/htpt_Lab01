@@ -1,9 +1,9 @@
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class LogHandler {
     public static void Log(String message) {
-        LocalDateTime dateTime = LocalDateTime.now();
-        System.out.println("[" + dateTime + "] " + message);
+        LocalTime time = LocalTime.now();
+        System.out.println("[" + time + "] " + message);
     }
 
 }

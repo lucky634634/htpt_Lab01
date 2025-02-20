@@ -10,7 +10,7 @@ public class SendHandler extends Thread {
 
     public void run() {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(2000);
             Thread[] threads = new Thread[_process.processInfos.length - 1];
             for (int i = 0, j = 0; i < _process.processInfos.length; i++) {
                 if (_process.processInfos[i].id != _process.currentProcessInfo.id) {
@@ -35,8 +35,8 @@ public class SendHandler extends Thread {
             for (int i = 0; i < 10; i++) {
                 Message message = new Message(_process.currentProcessInfo.id, "Message " + i, processInfo.id,
                         _process.v_p);
-                SendMessage(processInfo, message);
-                LogHandler.Log("Message " + i + " sent to " + processInfo.id);
+                Thread st = new Thread(() -> SendMessage(processInfo, message));
+                st.start();
                 Thread.sleep(100);
             }
         } catch (Exception e) {
@@ -51,6 +51,7 @@ public class SendHandler extends Thread {
             oos.writeObject(message);
             oos.flush();
             socket.close();
+            LogHandler.Log(message.message + " to " + processInfo.id);
         } catch (Exception e) {
             // e.printStackTrace();
             System.err.println("Failed to send message to " + processInfo.id);
