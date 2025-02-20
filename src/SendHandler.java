@@ -37,7 +37,7 @@ public class SendHandler extends Thread {
                         _process.v_p);
                 Thread st = new Thread(() -> SendMessage(processInfo, message));
                 st.start();
-                Thread.sleep(100);
+                // Thread.sleep(100);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,7 +51,7 @@ public class SendHandler extends Thread {
             oos.writeObject(message);
             oos.flush();
             socket.close();
-            LogHandler.Log(message.message + " to " + processInfo.id);
+            LogHandler.Log(message.message + " to " + processInfo.id, _process.currentProcessInfo.id);
         } catch (Exception e) {
             // e.printStackTrace();
             System.err.println("Failed to send message to " + processInfo.id);

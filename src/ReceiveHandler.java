@@ -22,7 +22,7 @@ public class ReceiveHandler extends Thread {
     private void HandleIncomeMessage(Socket socket) {
         try (ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
             Message message = (Message) ois.readObject();
-            LogHandler.Log(message.toString());
+            LogHandler.Log(message.toString(), _process.currentProcessInfo.id);
         } catch (Exception e) {
             e.printStackTrace();
         }
