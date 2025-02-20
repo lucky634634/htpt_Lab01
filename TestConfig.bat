@@ -3,7 +3,7 @@
 setlocal
 break > .\cwd\test.cfg
 
-for /L %%i in (0,1,1) do (
+for /L %%i in (0,1,2) do (
     echo [process] >> .\cwd\test.cfg
     echo id = %%i >> .\cwd\test.cfg
     echo addr = 127.0.0.1 >> .\cwd\test.cfg
