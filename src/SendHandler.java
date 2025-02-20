@@ -32,12 +32,12 @@ public class SendHandler extends Thread {
 
     private void HandleSendMessage(ProcessInfo processInfo) {
         try {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 150; i++) {
                 Message message = new Message(_process.currentProcessInfo.id, "Message " + i, processInfo.id,
                         _process.v_p);
                 Thread st = new Thread(() -> SendMessage(processInfo, message));
                 st.start();
-                // Thread.sleep(100);
+                Thread.sleep(10);
             }
         } catch (Exception e) {
             e.printStackTrace();

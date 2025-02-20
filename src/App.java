@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class App {
             System.err.println("Id must be an integer");
             System.exit(1);
         }
-
+        ClearLog(id);
         ProcessInfo[] processInfos = ReadConfig(args[0]);
 
         for (int i = 0; i < processInfos.length; i++) {
@@ -76,5 +77,14 @@ public class App {
             processInfos[i] = processes.get(i);
         }
         return processInfos;
+    }
+
+    public static void ClearLog(int id) {
+        try {
+            File file = new File("log_" + id + ".log");
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
