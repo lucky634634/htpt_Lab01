@@ -31,7 +31,7 @@ public class App {
         Process process = new Process(processInfos, id);
         process.run();
 
-        // Pause();
+        Pause();
     }
 
     public static void Pause() {
@@ -39,6 +39,7 @@ public class App {
         System.out.println("Enter to continue");
         sc.nextLine();
         sc.close();
+        System.exit(0);
     }
 
     public static ProcessInfo[] ReadConfig(String fileName) {
