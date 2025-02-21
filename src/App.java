@@ -31,7 +31,7 @@ public class App {
         Process process = new Process(processInfos, id);
         process.run();
 
-        Pause();
+        // Pause();
     }
 
     public static void Pause() {

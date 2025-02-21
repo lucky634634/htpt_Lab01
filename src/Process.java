@@ -20,9 +20,15 @@ public class Process {
     }
 
     public void run() {
-        _receiveHandler = new ReceiveHandler(this);
-        _sendHandler = new SendHandler(this);
-        _receiveHandler.start();
-        _sendHandler.start();
+        try {
+
+            _receiveHandler = new ReceiveHandler(this);
+            _sendHandler = new SendHandler(this);
+            _receiveHandler.start();
+            _sendHandler.start();
+            _sendHandler.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
