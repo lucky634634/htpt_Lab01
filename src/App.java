@@ -27,11 +27,15 @@ public class App {
         for (int i = 0; i < processInfos.length; i++) {
             System.out.println(processInfos[i]);
         }
+        if (id >= processInfos.length) {
+            System.err.println("Id must be less than " + processInfos.length);
+            System.exit(1);
+        }
 
         Process process = new Process(processInfos, id);
         process.run();
 
-        // Pause();
+        Pause();
     }
 
     public static void Pause() {

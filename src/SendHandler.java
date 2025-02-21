@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 
 public class SendHandler extends Thread {
     private Process _process = null;
@@ -36,7 +37,7 @@ public class SendHandler extends Thread {
                 Message message = new Message(_process.currentProcessInfo.id, "Message " + i, processInfo.id,
                         _process.v_p);
                 SendMessage(processInfo, message);
-                Thread.sleep(10);
+                Thread.sleep((long) (Math.random() * 1000));
             }
         } catch (Exception e) {
             e.printStackTrace();
