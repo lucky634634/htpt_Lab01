@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.Random;
 
 public class SendHandler extends Thread {
     private Process _process = null;
@@ -45,17 +44,22 @@ public class SendHandler extends Thread {
     }
 
     private void SendMessage(ProcessInfo processInfo, Message message) {
-        try {
-            Socket socket = new Socket(processInfo.addr, processInfo.port);
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(message);
-            oos.flush();
-            socket.close();
-            LogHandler.Log(message.message + " to " + processInfo.id, _process.currentProcessInfo.id);
-        } catch (Exception e) {
-            // e.printStackTrace();
-            LogHandler.Log(message.message + " to " + processInfo.id + " failed", _process.currentProcessInfo.id);
-            SendMessage(processInfo, message);
+        while (true) {
+            try {
+                Socket socket = new Socket(processInfo.addr, processInfo.port);
+                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+                oos.writeObject(message);
+                oos.flush();
+                socket.close();
+                LogHandler.Log(message.message + " to " + processInfo.id, _process.currentProcessInfo.id);
+                Thread.sleep(1000);
+                return;
+            } catch (Exception e) {
+                // e.printStackTrace();
+                LogHandler.Log(message.message + " to " + processInfo.id + " failed", _process.currentProcessInfo.id);
+                // SendMessage(processInfo, message);
+                // return;
+            }
         }
     }
 }

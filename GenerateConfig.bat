@@ -9,7 +9,7 @@ for /L %%i in (0,1,11) do (
     if /i %%i LSS 10 (
         echo port = 500%%i >> .\cwd\config.cfg
     ) else (
-        echo port = 50%%i >> .\cwd\config .cfg
+        echo port = 50%%i >> .\cwd\config.cfg
     )
     echo: >> .\cwd\config.cfg
 )
