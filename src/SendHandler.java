@@ -50,6 +50,7 @@ public class SendHandler extends Thread {
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                 oos.writeObject(message);
                 oos.flush();
+                oos.close();
                 socket.close();
                 LogHandler.Log(message.message + " to " + processInfo.id, _process.currentProcessInfo.id);
                 Thread.sleep(1000);

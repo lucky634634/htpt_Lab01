@@ -5,7 +5,7 @@ public class ReceiveHandler extends Thread {
     private Process _process = null;
 
     public ReceiveHandler(Process process) {
-        this._process = process;
+        this._process = process; 
     }
 
     public void run() {

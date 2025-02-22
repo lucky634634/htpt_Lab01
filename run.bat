@@ -1,6 +1,7 @@
-
 @echo off
 setlocal enableextensions
+
+cmd /c "GenerateConfig.bat"
 
 cd ./cwd
 
