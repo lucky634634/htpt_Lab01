@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change directory to ./cwd
-cd ./cwd || { echo "Directory ./cwd not found"; exit 1; }
+cd ./cwd || exit
 
 # Loop from 0 to 11 (inclusive)
 for i in {0..11}; do

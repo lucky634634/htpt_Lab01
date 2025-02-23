@@ -5,8 +5,8 @@ public class Process {
 
     public ProcessInfo[] processInfos;
 
-    public int[][] v_p = null;
-    public int[] timestamp = null;
+    private int[][] _v_p = null;
+    private int[] _timestamp = null;
 
     private SendHandler _sendHandler = null;
     private ReceiveHandler _receiveHandler = null;
@@ -16,15 +16,15 @@ public class Process {
     public Process(ProcessInfo[] processInfos, int id) {
         this.processInfos = processInfos;
         this.currentProcessInfo = this.processInfos[id];
-        v_p = new int[processInfos.length][processInfos.length];
+        _v_p = new int[processInfos.length][processInfos.length];
         for (int i = 0; i < processInfos.length; i++) {
             for (int j = 0; j < processInfos.length; j++) {
-                v_p[i][j] = 0;
+                _v_p[i][j] = 0;
             }
         }
-        timestamp = new int[processInfos.length];
+        _timestamp = new int[processInfos.length];
         for (int i = 0; i < processInfos.length; i++) {
-            timestamp[i] = 0;
+            _timestamp[i] = 0;
         }
     }
 
@@ -41,19 +41,42 @@ public class Process {
         }
     }
 
-    public void UpdateV(int fromId, int toId) {
-        timestamp[fromId] += 1;
-    }
-
-    public void UpdateV_p(int[][] v_p) {
-        for (int i = 0; i < this.v_p.length; i++) {
-            for (int j = 0; j < this.v_p.length; j++) {
-                if (i == currentProcessInfo.id) {
-                    this.v_p[i][j] = 0;
-                    continue;
-                }
-                this.v_p[i][j] = Math.max(v_p[i][j], this.v_p[i][j]);
+    public int[][] GetV_p() {
+        _semaphore.acquireUninterruptibly();
+        int[][] v_p = new int[_v_p.length][_v_p.length];
+        for (int i = 0; i < _v_p.length; i++) {
+            for (int j = 0; j < _v_p.length; j++) {
+                v_p[i][j] = _v_p[i][j];
             }
         }
+        _semaphore.release();
+        return v_p;
+    }
+
+    public int[] GetTimestamp() {
+        _semaphore.acquireUninterruptibly();
+        int[] timestamp = new int[_timestamp.length];
+        for (int i = 0; i < _timestamp.length; i++) {
+            timestamp[i] = _timestamp[i];
+        }
+        _semaphore.release();
+        return timestamp;
+    }
+
+    public void IncreaseTimestamp() {
+        _semaphore.acquireUninterruptibly();
+        _timestamp[currentProcessInfo.id] += 1;
+        _semaphore.release();
+    }
+
+    public Message CreateMessageToSend(int fromId, String message, int toId) {
+        _semaphore.acquireUninterruptibly();
+        _timestamp[toId] += 1;
+        Message msg = new Message(fromId, message, toId, _timestamp, _v_p);
+        for (int i = 0; i < _timestamp.length; i++) {
+            _v_p[fromId][i] = _timestamp[i];
+        }
+        _semaphore.release();
+        return msg;
     }
 }

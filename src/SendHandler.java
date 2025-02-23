@@ -33,9 +33,9 @@ public class SendHandler extends Thread {
     private void HandleSendMessage(ProcessInfo processInfo) {
         try {
             for (int i = 0; i < 150; i++) {
-                Message message = new Message(_process.currentProcessInfo.id, "Message " + i, processInfo.id,
-                        _process.v_p);
-                SendMessage(processInfo, message);
+                _process.IncreaseTimestamp();
+                SendMessage(processInfo,
+                        _process.CreateMessageToSend(_process.currentProcessInfo.id, "Message " + i, processInfo.id));
                 Thread.sleep((long) (Math.random() * 1000));
             }
         } catch (Exception e) {
@@ -53,13 +53,13 @@ public class SendHandler extends Thread {
                 oos.close();
                 socket.close();
                 LogHandler.Log(message.message + " to " + processInfo.id, _process.currentProcessInfo.id);
-                Thread.sleep(1000);
                 return;
             } catch (Exception e) {
-                // e.printStackTrace();
                 LogHandler.Log(message.message + " to " + processInfo.id + " failed", _process.currentProcessInfo.id);
-                // SendMessage(processInfo, message);
-                // return;
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
             }
         }
     }

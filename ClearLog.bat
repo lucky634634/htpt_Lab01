@@ -2,7 +2,7 @@
 
 setlocal enableextensions
 
-cd ./cwd
+cd ./cwd || exit
 del *.log
 
 endlocal
