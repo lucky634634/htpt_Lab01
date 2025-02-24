@@ -10,8 +10,9 @@ public class Process {
 
     private SendHandler _sendHandler = null;
     private ReceiveHandler _receiveHandler = null;
+    public String logFile = "";
 
-    private Semaphore _semaphore = new Semaphore(1);
+    public Semaphore semaphore = new Semaphore(1);
 
     public Process(ProcessInfo[] processInfos, int id) {
         this.processInfos = processInfos;
@@ -26,6 +27,8 @@ public class Process {
         for (int i = 0; i < processInfos.length; i++) {
             _timestamp[i] = 0;
         }
+
+        logFile = "log_" + id + ".log";
     }
 
     public void run() {
@@ -42,41 +45,57 @@ public class Process {
     }
 
     public int[][] GetV_p() {
-        _semaphore.acquireUninterruptibly();
         int[][] v_p = new int[_v_p.length][_v_p.length];
         for (int i = 0; i < _v_p.length; i++) {
             for (int j = 0; j < _v_p.length; j++) {
                 v_p[i][j] = _v_p[i][j];
             }
         }
-        _semaphore.release();
         return v_p;
     }
 
     public int[] GetTimestamp() {
-        _semaphore.acquireUninterruptibly();
         int[] timestamp = new int[_timestamp.length];
         for (int i = 0; i < _timestamp.length; i++) {
             timestamp[i] = _timestamp[i];
         }
-        _semaphore.release();
         return timestamp;
     }
 
-    public void IncreaseTimestamp() {
-        _semaphore.acquireUninterruptibly();
-        _timestamp[currentProcessInfo.id] += 1;
-        _semaphore.release();
+    public void IncreaseTimestamp(int id) {
+        _timestamp[id] += 1;
     }
 
-    public Message CreateMessageToSend(int fromId, String message, int toId) {
-        _semaphore.acquireUninterruptibly();
-        _timestamp[toId] += 1;
-        Message msg = new Message(fromId, message, toId, _timestamp, _v_p);
+    public Message CreateMessageToSend(String message, int toId) {
+        semaphore.acquireUninterruptibly();
+        IncreaseTimestamp(currentProcessInfo.id);
+        Message msg = new Message(currentProcessInfo.id, message, toId, _timestamp, _v_p);
         for (int i = 0; i < _timestamp.length; i++) {
-            _v_p[fromId][i] = _timestamp[i];
+            _v_p[currentProcessInfo.id][i] = _timestamp[i];
         }
-        _semaphore.release();
+        PrintTimeStamp();
+        semaphore.release();
         return msg;
+    }
+
+    public void UpdateTimestamp(int[] timestamp) {
+        for (int i = 0; i < timestamp.length; i++) {
+            _timestamp[i] = Math.max(_timestamp[i], timestamp[i]);
+        }
+    }
+
+    public void UpdateV_p(int[][] v_p) {
+    }
+
+    public void PrintTimeStamp() {
+        String ts = "<";
+        for (int i = 0; i < _timestamp.length; i++) {
+            ts += _timestamp[i];
+            if (i != _timestamp.length - 1) {
+                ts += ", ";
+            }
+        }
+        ts += ">";
+        System.out.println(ts);
     }
 }

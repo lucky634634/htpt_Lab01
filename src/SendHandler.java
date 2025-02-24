@@ -11,6 +11,7 @@ public class SendHandler extends Thread {
     public void run() {
         try {
             Thread.sleep(2000);
+            System.out.println("SendHandler started");
             Thread[] threads = new Thread[_process.processInfos.length - 1];
             for (int i = 0, j = 0; i < _process.processInfos.length; i++) {
                 if (_process.processInfos[i].id != _process.currentProcessInfo.id) {
@@ -32,11 +33,19 @@ public class SendHandler extends Thread {
 
     private void HandleSendMessage(ProcessInfo processInfo) {
         try {
-            for (int i = 0; i < 150; i++) {
-                _process.IncreaseTimestamp();
-                SendMessage(processInfo,
-                        _process.CreateMessageToSend(_process.currentProcessInfo.id, "Message " + i, processInfo.id));
+            final int numMessages = 150;
+            Thread[] threads = new Thread[numMessages];
+            for (int i = 0; i < numMessages; i++) {
+                String msg = "Message " + i;
+                Message message = _process.CreateMessageToSend(msg, processInfo.id);
+
+                threads[i] = new Thread(
+                        () -> SendMessage(processInfo, message));
+                threads[i].start();
                 Thread.sleep((long) (Math.random() * 1000));
+            }
+            for (int i = 0; i < numMessages; i++) {
+                threads[i].join();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,13 +61,13 @@ public class SendHandler extends Thread {
                 oos.flush();
                 oos.close();
                 socket.close();
-                LogHandler.Log(message.message + " to " + processInfo.id, _process.currentProcessInfo.id);
+                LogHandler.Log(message.message + " to " + processInfo.id, _process.logFile);
                 return;
             } catch (Exception e) {
-                LogHandler.Log(message.message + " to " + processInfo.id + " failed", _process.currentProcessInfo.id);
+                LogHandler.Log(message.message + " to " + processInfo.id + " failed", _process.logFile);
             }
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (Exception e) {
             }
         }

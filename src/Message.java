@@ -43,4 +43,13 @@ public class Message implements Serializable {
         }
         return true;
     }
+
+    public boolean ContainsPi(int id) {
+        for (int i = 0; i < timeStamp.length; i++) {
+            if (v_p[id][i] != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
