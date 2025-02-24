@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -27,7 +28,6 @@ public class ReceiveHandler extends Thread {
             Message message = (Message) ois.readObject();
             _process.semaphore.acquireUninterruptibly();
             SES(message);
-            _process.PrintTimeStamp();
             _process.semaphore.release();
 
         } catch (Exception e) {
@@ -36,39 +36,38 @@ public class ReceiveHandler extends Thread {
     }
 
     private void SES(Message message) {
-        try {
-            if (message.IsVpEmpty()) {
-                _process.IncreaseTimestamp(_process.currentProcessInfo.id);
-                _process.UpdateTimestamp(message.timeStamp);
-                LogHandler.Log(message.toString(), _process.logFile);
-                return;
+        if (CheckDelivery(message)) {
+            LogHandler.Log("Delivered: " + message.message + " from " + message.fromId, _process.logFile);
+            _process.MergeV_P(message.v_p);
+            return;
+        }
+        LogHandler.Log("Buffer: " + message.message + " from " + message.fromId, _process.logFile);
+        _bufferQueue.add(message);
+        Iterator<Message> iterator = _bufferQueue.iterator();
+        while (iterator.hasNext()) {
+            Message msg = iterator.next();
+            if (CheckDelivery(msg)) {
+                LogHandler.Log("Get from buffer: " + msg.message + " from " + msg.fromId, _process.logFile);
+                _process.MergeV_P(msg.v_p);
+                iterator.remove();
             }
-            if (!message.ContainsPi(_process.currentProcessInfo.id)) {
-                _process.IncreaseTimestamp(_process.currentProcessInfo.id);
-                _process.UpdateTimestamp(message.timeStamp);
-                LogHandler.Log(message.toString(), _process.logFile);
-                return;
-            }
-            if (!TimeStampGreaterThan(message.timeStamp, _process.GetTimestamp())) {
-                _process.IncreaseTimestamp(_process.currentProcessInfo.id);
-                String log = "Buffer: " + message.toString();
-                LogHandler.Log(log, _process.logFile);
-                return;
-            }
-            _process.IncreaseTimestamp(_process.currentProcessInfo.id);
-            _process.UpdateTimestamp(message.timeStamp);
-            LogHandler.Log(message.toString(), _process.logFile);
-        } catch (Exception e) {
         }
     }
 
-    private boolean TimeStampGreaterThan(int[] t1, int[] t2) {
-        for (int i = 0; i < t1.length; i++) {
-            if (t1[i] <= t2[i]) {
-                return false;
+    private boolean CheckDelivery(Message message) {
+        if (_process.v_p[message.fromId][message.toId] != message.v_p[message.fromId][message.toId] - 1) {
+            return false;
+        }
+        for (int i = 0; i < message.v_p.length; i++) {
+            if (i == message.fromId) {
+                continue;
+            }
+            for (int j = 0; j < message.v_p.length; j++) {
+                if (_process.v_p[i][j] < message.v_p[i][j]) {
+                    return false;
+                }
             }
         }
         return true;
     }
-
 }
