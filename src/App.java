@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
+        if (args.length < 2 || args.length > 3) {
             System.err.println("Please provide 2 arguments");
             System.exit(1);
         }
@@ -32,7 +32,11 @@ public class App {
             System.exit(1);
         }
 
-        Process process = new Process(processInfos, id);
+        int numMessages = 150;
+        if (args.length == 3) {
+            numMessages = Integer.parseInt(args[2]);
+        }
+        Process process = new Process(processInfos, id, numMessages);
         process.run();
 
         Pause();

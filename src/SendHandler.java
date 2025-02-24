@@ -3,7 +3,6 @@ import java.net.*;
 
 public class SendHandler extends Thread {
     private Process _process = null;
-    final int NUM_MESSAGES = 150;
 
     public SendHandler(Process process) {
         this._process = process;
@@ -34,8 +33,8 @@ public class SendHandler extends Thread {
 
     private void HandleSendMessage(ProcessInfo processInfo) {
         try {
-            Thread[] threads = new Thread[NUM_MESSAGES];
-            for (int i = 0; i < NUM_MESSAGES; i++) {
+            Thread[] threads = new Thread[_process.numMessages];
+            for (int i = 0; i < _process.numMessages; i++) {
                 String msg = "Message " + i;
                 Message message = _process.CreateMessageToSend(msg, processInfo.id);
 
@@ -44,7 +43,7 @@ public class SendHandler extends Thread {
                 threads[i].start();
                 Thread.sleep((long) (Math.random() * 1000));
             }
-            for (int i = 0; i < NUM_MESSAGES; i++) {
+            for (int i = 0; i < _process.numMessages; i++) {
                 threads[i].join();
             }
         } catch (Exception e) {

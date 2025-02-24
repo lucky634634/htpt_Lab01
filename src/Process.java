@@ -10,10 +10,11 @@ public class Process {
     private SendHandler _sendHandler = null;
     private ReceiveHandler _receiveHandler = null;
     public String logFile = "";
+    public int numMessages = 150;
 
     public Semaphore semaphore = new Semaphore(1);
 
-    public Process(ProcessInfo[] processInfos, int id) {
+    public Process(ProcessInfo[] processInfos, int id, int numMessages) {
         this.processInfos = processInfos;
         this.currentProcessInfo = this.processInfos[id];
         v_p = new int[processInfos.length][processInfos.length];
@@ -24,6 +25,7 @@ public class Process {
         }
 
         logFile = "log_" + id + ".log";
+        this.numMessages = numMessages;
     }
 
     public void run() {
@@ -52,6 +54,15 @@ public class Process {
             for (int j = 0; j < this.v_p.length; j++) {
                 this.v_p[i][j] = Math.max(this.v_p[i][j], v_p[i][j]);
             }
+        }
+    }
+
+    public void PrintV_P() {
+        for (int i = 0; i < v_p.length; i++) {
+            for (int j = 0; j < v_p.length; j++) {
+                System.out.print(v_p[i][j] + " ");
+            }
+            System.out.println(" ");
         }
     }
 }
