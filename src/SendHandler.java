@@ -10,7 +10,7 @@ public class SendHandler extends Thread {
 
     public void run() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000 + (long) (Math.random() * 1000));
             System.out.println("SendHandler started");
             Thread[] threads = new Thread[_process.processInfos.length - 1];
             for (int i = 0, j = 0; i < _process.processInfos.length; i++) {
