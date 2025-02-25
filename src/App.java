@@ -1,25 +1,43 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class App {
-    public ProcessInfo[] processInfos;
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 0) {
-            System.err.println("Program requires at least one argument");
+        if (args.length < 2 || args.length > 3) {
+            System.err.println("Please provide 2 arguments");
             System.exit(1);
         }
-        System.out.println(args[0]);
-        App app = new App();
-
-        app.processInfos = app.ReadConfig("config.cfg");
-
-        for (int i = 0; i < app.processInfos.length; i++) {
-            System.out.println(app.processInfos[i]);
+        System.out.println("config: " + args[0]);
+        System.out.println("id: " + args[1]);
+        int id = 0;
+        try {
+            id = Integer.parseInt(args[1]);
+        } catch (NumberFormatException e) {
+            System.err.println("Id must be an integer");
+            System.exit(1);
         }
+        ClearLog(id);
+        ProcessInfo[] processInfos = ReadConfig(args[0]);
+
+        for (int i = 0; i < processInfos.length; i++) {
+            System.out.println(processInfos[i]);
+        }
+        if (id >= processInfos.length) {
+            System.err.println("Id must be less than " + processInfos.length);
+            System.exit(1);
+        }
+
+        int numMessages = 150;
+        if (args.length == 3) {
+            numMessages = Integer.parseInt(args[2]);
+        }
+        Process process = new Process(processInfos, id, numMessages);
+        process.run();
 
         Pause();
     }
@@ -29,9 +47,10 @@ public class App {
         System.out.println("Enter to continue");
         sc.nextLine();
         sc.close();
+        System.exit(0);
     }
 
-    public ProcessInfo[] ReadConfig(String fileName) {
+    public static ProcessInfo[] ReadConfig(String fileName) {
         ArrayList<ProcessInfo> processes = new ArrayList<ProcessInfo>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
@@ -67,5 +86,14 @@ public class App {
             processInfos[i] = processes.get(i);
         }
         return processInfos;
+    }
+
+    public static void ClearLog(int id) {
+        try {
+            File file = new File("log_" + id + ".log");
+            file.delete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
