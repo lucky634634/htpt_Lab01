@@ -36,9 +36,15 @@ public class ReceiveHandler extends Thread {
     }
 
     private void SES(Message message) {
+        System.out.println("Process");
+        _process.PrintV_P();
+        System.out.println("Message");
+        message.PrintV_P();
         if (CheckDelivery(message)) {
             LogHandler.Log("Delivered: " + message.message + " from " + message.fromId, _process.logFile);
             _process.MergeV_P(message.v_p);
+            System.out.println("Process");
+            _process.PrintV_P();
             DeliverFromBuffer();
             return;
         }
@@ -79,6 +85,8 @@ public class ReceiveHandler extends Thread {
                 if (CheckDelivery(msg)) {
                     LogHandler.Log("Get from buffer: " + msg.message + " from " + msg.fromId, _process.logFile);
                     _process.MergeV_P(msg.v_p);
+                    System.out.println("Process");
+                    _process.PrintV_P();
                     iterator.remove();
                     delivered = true;
                 }
