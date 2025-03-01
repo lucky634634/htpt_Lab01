@@ -25,4 +25,15 @@ public class Message implements Serializable {
         return "Message from " + fromId + ": " + message;
     }
 
+    public void PrintV_P() {
+        String result = "";
+        for (int i = 0; i < v_p.length; i++) {
+            for (int j = 0; j < v_p.length; j++) {
+                result += v_p[i][j] + " ";
+            }
+            result += "\n";
+        }
+        System.out.println(result);
+    }
+
 }
