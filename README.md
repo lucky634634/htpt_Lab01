@@ -1,8 +1,8 @@
 ## Đồ án Lab 01 - Chuyên đề hệ thống phân tán
 
 Thực hiện:
-21127077 - Huỳnh Đăng Khoa
-21127658 - Trần Hà Minh Nhật
+- 21127077 - Huỳnh Đăng Khoa
+- 21127658 - Trần Hà Minh Nhật
 
 ## Cấu trúc thư mục
 
